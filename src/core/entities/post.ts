@@ -1,4 +1,5 @@
 import { randomUUID } from 'node:crypto'
+import { ulid } from 'ulid'
 import type { Optional } from '../../utils/optional.js'
 
 type PostProps = {
@@ -23,7 +24,7 @@ export class Post {
   updated_at: Date
 
   constructor(props: Optional<PostProps, 'id' | 'created_at' | 'updated_at'>) {
-    this.id = props.id ?? randomUUID()
+    this.id = props.id ?? ulid()
     this.title = props.title
     this.description = props.description
     this.content = props.content

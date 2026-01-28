@@ -20,5 +20,5 @@ export const commentTable = mysqlTable('comments', {
     .notNull(),
   like_count: int('like_count').default(0).notNull(),
   created_at: timestamp('created_at').defaultNow().notNull(),
-  updated_at: timestamp('updated_at').onUpdateNow().notNull(),
+  updated_at: timestamp('updated_at').defaultNow().onUpdateNow().notNull(),
 })

@@ -6,7 +6,7 @@ import { userRoutes } from './http/routes/user-routes.js'
 
 const app = express()
 app.use(cors())
-app.use(express.json())
+app.use(express.json({ limit: '10mb' }))
 
 userRoutes(app)
 postRoutes(app)

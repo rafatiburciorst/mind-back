@@ -42,6 +42,9 @@ importers:
       '@biomejs/biome':
         specifier: ^2.3.13
         version: 2.3.13
+      '@faker-js/faker':
+        specifier: ^10.2.0
+        version: 10.2.0
       '@types/express':
         specifier: ^5.0.6
         version: 5.0.6
@@ -567,6 +570,10 @@ packages:
     engines: {node: '>=18'}
     cpu: [x64]
     os: [win32]
+
+  '@faker-js/faker@10.2.0':
+    resolution: {integrity: sha512-rTXwAsIxpCqzUnZvrxVh3L0QA0NzToqWBLAhV+zDV3MIIwiQhAZHMdPCIaj5n/yADu/tyk12wIPgL6YHGXJP+g==}
+    engines: {node: ^20.19.0 || ^22.13.0 || ^23.5.0 || >=24.0.0, npm: '>=10'}
 
   '@types/body-parser@1.19.6':
     resolution: {integrity: sha512-HLFeCYgz89uk22N5Qg3dvGvsv46B8GLvKKo1zKG4NybA8U2DiEO3w9lqGg29t/tfLRJpJ6iQxnVw4OnB7MoM9g==}
@@ -1337,6 +1344,8 @@ snapshots:
 
   '@esbuild/win32-x64@0.27.2':
     optional: true
+
+  '@faker-js/faker@10.2.0': {}
 
   '@types/body-parser@1.19.6':
     dependencies:

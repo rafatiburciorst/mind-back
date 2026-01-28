@@ -1,14 +1,13 @@
-import { randomUUID } from 'node:crypto'
-import fs from 'node:fs'
 import { db } from '../../../infra/database.js'
 import { postTable } from '../../../infra/schemas/posts.js'
+import { saveBase64Image } from '../../../utils/image.js'
 
 type Input = {
   title: string
   description: string
   content: string
   author_id: string
-  image_url?: string
+  image_base64?: string
 }
 
 type Output = {}
@@ -16,13 +15,9 @@ type Output = {}
 export class CreatePost {
   async execute(input: Input): Promise<Output> {
     let filename: string | undefined
-    if (input.image_url) {
-      const imageBuffer = Buffer.from(input.image_url, 'base64')
-      filename = `/uploads/${randomUUID()}.png`
-      if (!fs.existsSync('./uploads')) {
-        await fs.promises.mkdir('./uploads')
-      }
-      await fs.promises.writeFile(`./uploads/${filename}`, imageBuffer)
+    if (input.image_base64) {
+      const result = await saveBase64Image(input.image_base64)
+      filename = result.filename
     }
 
     await db.insert(postTable).values({
@@ -31,6 +26,7 @@ export class CreatePost {
       content: input.content,
       author_id: input.author_id,
       image_url: filename,
+      updated_at: new Date(),
     })
 
     return {}

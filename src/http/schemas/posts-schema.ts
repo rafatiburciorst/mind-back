@@ -6,4 +6,15 @@ export const postsQuerySchema = z.object({
   search: z.string().optional(),
 })
 
+export const createPostSchema = z.object({
+  title: z.string().min(1).max(255),
+  content: z.string().min(1),
+  description: z.string().min(1).max(500),
+  image_base64: z
+    .string()
+    .regex(/^data:image\/\w+;base64,.+$/, 'Invalid base64 image format')
+    .optional(),
+})
+
 export type PostsQueryInput = z.infer<typeof postsQuerySchema>
+export type CreatePostInput = z.infer<typeof createPostSchema>
