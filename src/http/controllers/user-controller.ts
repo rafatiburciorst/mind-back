@@ -17,6 +17,7 @@ export class UserController {
     const input = {
       name: request.body.name,
       email: request.body.email,
+      password: request.body.password,
     }
     await this.createUser.execute(input)
     response.status(201).send({ message: 'User created successfully' })

@@ -9,7 +9,8 @@
     "build": "tsc",
     "start": "node dist/app.js",
     "generate": "node --import tsx ./node_modules/drizzle-kit/bin.cjs generate",
-    "migrate": "node --import tsx ./node_modules/drizzle-kit/bin.cjs migrate"
+    "migrate": "node --import tsx ./node_modules/drizzle-kit/bin.cjs migrate",
+    "studio": "node --import tsx ./node_modules/drizzle-kit/bin.cjs studio"
   },
   "keywords": [],
   "author": "",
@@ -24,8 +25,10 @@
     "typescript": "^5.9.3"
   },
   "dependencies": {
+    "@types/cors": "^2.8.19",
     "add": "^2.0.6",
     "bcryptjs": "^3.0.3",
+    "cors": "^2.8.6",
     "dotenv": "^17.2.3",
     "drizzle-orm": "^0.45.1",
     "express": "^5.2.1",
