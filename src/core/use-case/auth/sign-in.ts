@@ -1,6 +1,6 @@
 import { compare } from 'bcryptjs'
 import { eq } from 'drizzle-orm'
-import * as jwt from 'jsonwebtoken'
+import jwt from 'jsonwebtoken'
 import { env } from '../../../env.js'
 import { db } from '../../../infra/database.js'
 import { userTable } from '../../../infra/schemas/users.js'
