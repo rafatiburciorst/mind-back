@@ -2,6 +2,7 @@ import { Application } from 'express'
 import { CreatePost } from '../../core/use-case/posts/create-post.js'
 import { GetPosts } from '../../core/use-case/posts/get-posts.js'
 import { PostController } from '../controllers/post-controller.js'
+import { auth } from '../middlewares/auth.js'
 import { validate } from '../middlewares/validate.js'
 import { createPostSchema, postsQuerySchema } from '../schemas/posts-schema.js'
 
@@ -10,7 +11,7 @@ export async function postRoutes(app: Application) {
   const createPost = new CreatePost()
   const postController = new PostController(getPosts, createPost)
 
-  app.get(
+  app.post(
     '/posts',
     validate({ query: postsQuerySchema }),
     postController.getAllPosts.bind(postController)
@@ -18,6 +19,7 @@ export async function postRoutes(app: Application) {
 
   app.post(
     '/posts',
+    auth,
     validate({
       body: createPostSchema,
     }),

@@ -31,7 +31,7 @@ export class PostController {
       content: request.body.content,
       description: request.body.description,
       image_base64: request.body.image_base64,
-      author_id: '01KG3ATB2GMNESVGYWY76B40C6', // In a real app, get this from the authenticated user
+      author_id: request.user!.sub,
     }
 
     await this.createPostUseCase.execute(input)

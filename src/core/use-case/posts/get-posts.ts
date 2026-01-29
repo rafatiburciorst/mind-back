@@ -1,7 +1,10 @@
 import { eq, getTableColumns, sql } from 'drizzle-orm'
 import { db } from '../../../infra/database.js'
+import { commentTable } from '../../../infra/schemas/comments.js'
 import { postTable } from '../../../infra/schemas/posts.js'
+import { userTable } from '../../../infra/schemas/users.js'
 import { Pagination } from '../../../utils/paginations.js'
+import { Comment } from '../../entities/comment.js'
 import { Post } from '../../entities/post.js'
 
 type Input = {
@@ -19,25 +22,54 @@ export class GetPosts {
     const data = await db
       .select({
         ...getTableColumns(postTable),
+        author: userTable.name,
+        comments: sql`
+          IF(
+            ${commentTable.id} IS NULL,
+            JSON_ARRAY(),
+            JSON_ARRAYAGG(
+              JSON_OBJECT(
+                'id', ${commentTable.id},
+                'content', ${commentTable.content},
+                'author', ${userTable.name},
+                'created_at', ${commentTable.created_at}
+              )
+            )
+          )
+        `,
         total: sql<number>`count(${postTable.id}) over ()`,
       })
       .from(postTable)
+      .innerJoin(userTable, eq(postTable.author_id, userTable.id))
+      .leftJoin(commentTable, eq(commentTable.post_id, postTable.id))
       .where(search ? eq(postTable.title, search) : undefined)
       .limit(page_size)
       .offset((page - 1) * page_size)
+      .groupBy(postTable.id, userTable.name, commentTable.id)
 
-    const posts = data.map(
-      item =>
-        new Post({
-          id: item.id,
-          title: item.title,
-          content: item.content,
-          author_id: item.author_id,
-          created_at: item.created_at,
-          updated_at: item.updated_at,
-          description: item.description,
-        })
-    )
+    const posts = data.map(item => {
+      const comments = (item.comments as any[]).map(
+        comment =>
+          new Comment({
+            id: comment.id,
+            content: comment.content,
+            author: comment.author,
+            post_id: item.id,
+            created_at: comment.created_at,
+          })
+      )
+
+      return new Post({
+        id: item.id,
+        title: item.title,
+        content: item.content,
+        author_id: item.author_id,
+        created_at: item.created_at,
+        updated_at: item.updated_at,
+        description: item.description,
+        comments,
+      })
+    })
 
     const pagination = new Pagination<Post>({
       items: posts,
