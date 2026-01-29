@@ -25,7 +25,6 @@ export function auth(req: Request, res: Response, next: NextFunction) {
 
   const [, token] = authHeader.split(' ')
 
-  console.log('Token:', token)
   if (!token) {
     res.status(401).json({ message: 'Token malformed' })
     return
