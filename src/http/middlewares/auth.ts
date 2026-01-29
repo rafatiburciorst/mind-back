@@ -1,5 +1,5 @@
 import type { NextFunction, Request, Response } from 'express'
-import * as jwt from 'jsonwebtoken'
+import jwt from 'jsonwebtoken'
 import { env } from '../../env.js'
 
 interface JwtPayload {
@@ -25,6 +25,7 @@ export function auth(req: Request, res: Response, next: NextFunction) {
 
   const [, token] = authHeader.split(' ')
 
+  console.log('Token:', token)
   if (!token) {
     res.status(401).json({ message: 'Token malformed' })
     return
