@@ -24,17 +24,18 @@ export class GetPosts {
         ...getTableColumns(postTable),
         author: userTable.name,
         comments: sql`
-          IF(
-            ${commentTable.id} IS NULL,
-            JSON_ARRAY(),
+          COALESCE(
             JSON_ARRAYAGG(
-              JSON_OBJECT(
-                'id', ${commentTable.id},
-                'content', ${commentTable.content},
-                'author', ${userTable.name},
-                'created_at', ${commentTable.created_at}
-              )
-            )
+              CASE WHEN ${commentTable.id} IS NOT NULL THEN
+                JSON_OBJECT(
+                  'id', ${commentTable.id},
+                  'content', ${commentTable.content},
+                  'author', ${userTable.name},
+                  'created_at', ${commentTable.created_at}
+                )
+              END
+            ),
+            JSON_ARRAY()
           )
         `,
         total: sql<number>`count(${postTable.id}) over ()`,
@@ -45,19 +46,21 @@ export class GetPosts {
       .where(search ? eq(postTable.title, search) : undefined)
       .limit(page_size)
       .offset((page - 1) * page_size)
-      .groupBy(postTable.id, userTable.name, commentTable.id)
+      .groupBy(postTable.id, userTable.name)
 
     const posts = data.map(item => {
-      const comments = (item.comments as any[]).map(
-        comment =>
-          new Comment({
-            id: comment.id,
-            content: comment.content,
-            author: comment.author,
-            post_id: item.id,
-            created_at: comment.created_at,
-          })
-      )
+      const comments = ((item.comments as any[]) || [])
+        .filter(comment => comment !== null)
+        .map(
+          comment =>
+            new Comment({
+              id: comment.id,
+              content: comment.content,
+              author: comment.author,
+              post_id: item.id,
+              created_at: comment.created_at,
+            })
+        )
 
       return new Post({
         id: item.id,

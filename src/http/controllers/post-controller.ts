@@ -1,10 +1,9 @@
 import { Request, Response } from 'express'
-import { ulid } from 'ulid'
 import type { CreatePost } from '../../core/use-case/posts/create-post.js'
 import type { GetPosts } from '../../core/use-case/posts/get-posts.js'
-import type {
-  CreatePostInput,
-  PostsQueryInput,
+import {
+  postsQuerySchema,
+  type CreatePostInput,
 } from '../schemas/posts-schema.js'
 
 export class PostController {
@@ -14,8 +13,7 @@ export class PostController {
   ) {}
 
   async getAllPosts(request: Request, response: Response) {
-    const { page, page_size, search } =
-      request.query as unknown as PostsQueryInput
+    const { page, page_size, search } = postsQuerySchema.parse(request.query)
 
     const pagination = await this.getPosts.execute({ page, page_size, search })
 
