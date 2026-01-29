@@ -2,8 +2,8 @@ import { Request, Response } from 'express'
 import type { CreatePost } from '../../core/use-case/posts/create-post.js'
 import type { GetPosts } from '../../core/use-case/posts/get-posts.js'
 import {
-  postsQuerySchema,
   type CreatePostInput,
+  postsQuerySchema,
 } from '../schemas/posts-schema.js'
 
 export class PostController {
@@ -34,6 +34,6 @@ export class PostController {
 
     await this.createPostUseCase.execute(input)
 
-    response.status(201).send()
+    response.status(201).send({ message: 'Post created successfully' })
   }
 }

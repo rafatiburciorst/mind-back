@@ -1,4 +1,5 @@
-import { eq, getTableColumns, sql } from 'drizzle-orm'
+import { desc, eq, getTableColumns, sql } from 'drizzle-orm'
+import { env } from '../../../env.js'
 import { db } from '../../../infra/database.js'
 import { commentTable } from '../../../infra/schemas/comments.js'
 import { postTable } from '../../../infra/schemas/posts.js'
@@ -22,6 +23,7 @@ export class GetPosts {
     const data = await db
       .select({
         ...getTableColumns(postTable),
+        image_url: sql`${env.IMAGE_BASE_URL}/${postTable.image_url}`,
         author: userTable.name,
         comments: sql`
           COALESCE(
@@ -47,6 +49,7 @@ export class GetPosts {
       .limit(page_size)
       .offset((page - 1) * page_size)
       .groupBy(postTable.id, userTable.name)
+      .orderBy(desc(postTable.created_at))
 
     const posts = data.map(item => {
       const comments = ((item.comments as any[]) || [])
