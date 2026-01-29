@@ -5,10 +5,10 @@ import type { GetPostById } from './get-post-by-id.js'
 
 type Input = {
   id: string
-  title: string
-  description: string
-  content: string
-  author_id: string
+  title?: string
+  description?: string
+  content?: string
+  author_id?: string
 }
 
 type Output = {}

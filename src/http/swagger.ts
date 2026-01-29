@@ -117,6 +117,21 @@ const options: swaggerJsdoc.Options = {
             message: { type: 'string' },
           },
         },
+        UpdatePost: {
+          type: 'object',
+          properties: {
+            title: { type: 'string', maxLength: 255 },
+            content: { type: 'string' },
+            description: { type: 'string', maxLength: 500 },
+            image_base64: { type: 'string' },
+          },
+        },
+        SuccessMessage: {
+          type: 'object',
+          properties: {
+            message: { type: 'string' },
+          },
+        },
       },
     },
     paths: {
@@ -222,9 +237,10 @@ const options: swaggerJsdoc.Options = {
         },
       },
       '/posts': {
-        get: {
+        post: {
           tags: ['Posts'],
           summary: 'Listar posts com paginação',
+          description: 'Retorna uma lista paginada de posts. Utiliza POST para permitir filtros mais complexos.',
           parameters: [
             {
               name: 'page',
@@ -265,6 +281,8 @@ const options: swaggerJsdoc.Options = {
             },
           },
         },
+      },
+      '/posts/create': {
         post: {
           tags: ['Posts'],
           summary: 'Criar novo post',
@@ -278,8 +296,77 @@ const options: swaggerJsdoc.Options = {
             },
           },
           responses: {
-            201: { description: 'Post criado com sucesso' },
+            201: {
+              description: 'Post criado com sucesso',
+              content: {
+                'application/json': {
+                  schema: { $ref: '#/components/schemas/SuccessMessage' },
+                },
+              },
+            },
             401: { description: 'Não autenticado' },
+          },
+        },
+      },
+      '/posts/{id}': {
+        put: {
+          tags: ['Posts'],
+          summary: 'Atualizar post',
+          security: [{ bearerAuth: [] }],
+          parameters: [
+            {
+              name: 'id',
+              in: 'path',
+              required: true,
+              schema: { type: 'string' },
+              description: 'ID do post',
+            },
+          ],
+          requestBody: {
+            required: true,
+            content: {
+              'application/json': {
+                schema: { $ref: '#/components/schemas/UpdatePost' },
+              },
+            },
+          },
+          responses: {
+            200: {
+              description: 'Post atualizado com sucesso',
+              content: {
+                'application/json': {
+                  schema: { $ref: '#/components/schemas/SuccessMessage' },
+                },
+              },
+            },
+            401: { description: 'Não autenticado' },
+            404: { description: 'Post não encontrado' },
+          },
+        },
+        delete: {
+          tags: ['Posts'],
+          summary: 'Deletar post',
+          security: [{ bearerAuth: [] }],
+          parameters: [
+            {
+              name: 'id',
+              in: 'path',
+              required: true,
+              schema: { type: 'string' },
+              description: 'ID do post',
+            },
+          ],
+          responses: {
+            200: {
+              description: 'Post deletado com sucesso',
+              content: {
+                'application/json': {
+                  schema: { $ref: '#/components/schemas/SuccessMessage' },
+                },
+              },
+            },
+            401: { description: 'Não autenticado' },
+            404: { description: 'Post não encontrado' },
           },
         },
       },

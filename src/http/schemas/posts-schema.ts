@@ -16,5 +16,10 @@ export const createPostSchema = z.object({
     .optional(),
 })
 
+export const updatePostParamsSchema = z.object({
+  id: z.string(),
+})
+
 export type PostsQueryInput = z.infer<typeof postsQuerySchema>
 export type CreatePostInput = z.infer<typeof createPostSchema>
+export type PostParamsIDInput = z.infer<typeof updatePostParamsSchema>
