@@ -18,7 +18,7 @@ export async function postRoutes(app: Application) {
   )
 
   app.post(
-    '/posts',
+    '/posts/create',
     auth,
     validate({
       body: createPostSchema,

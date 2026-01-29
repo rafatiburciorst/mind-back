@@ -7,6 +7,7 @@ export const envSchema = z.object({
   DATABASE_PASSWORD: z.string().nonempty(),
   DATABASE_NAME: z.string().nonempty(),
   JWT_SECRET: z.string().nonempty(),
+  APP_PORT: z.coerce.number().default(3333),
 })
 
 export const env = envSchema.parse(process.env)
