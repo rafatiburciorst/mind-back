@@ -179,6 +179,30 @@ O token é obtido através do endpoint `/signin` e expira em 1 dia.
 - `created_at` - Data de criação
 - `updated_at` - Data de atualização
 
+## Backup do Banco de Dados
+
+### Criar dump
+
+```bash
+docker exec mind-back-mysql mysqldump -u docker -pdocker --no-tablespaces articles_db > dump.sql
+```
+
+### Restaurar dump
+
+```bash
+docker exec -i mind-back-mysql mysql -u docker -pdocker articles_db < dump.sql
+```
+
+### Opções úteis
+
+```bash
+# Apenas estrutura (sem dados)
+docker exec mind-back-mysql mysqldump -u docker -pdocker --no-tablespaces --no-data articles_db > schema.sql
+
+# Apenas dados (sem estrutura)
+docker exec mind-back-mysql mysqldump -u docker -pdocker --no-tablespaces --no-create-info articles_db > data.sql
+```
+
 ## Licença
 
 Este projeto está sob a licença MIT.
